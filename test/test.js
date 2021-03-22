@@ -10,63 +10,63 @@ require('chai')
 
 //h0m3w0rk - check values from events.
 
-contract('dBank', ([deployer, user]) => {
+contract('dGame', ([deployer, user]) => {
   let dgame, ctoken, nftoken
 
   beforeEach(async () => {
     ctoken = await CToken.new()
     nftoken = await NFToken.new()
     dgame = await DecentralizedGame.new(ctoken.address, nftoken.address)
-    await ctoken.passMinterRole(dbank.address, {from: deployer})
-    await nftoken.passMinterRole(dbank.address, {from: deployer})
+    await ctoken.passMinterRole(dgame.address, {from: deployer})
+    await nftoken.passMinterRole(dgame.address, {from: deployer})
   })
 
   describe('testing token contract...', () => {
     describe('success', () => {
-      it('checking token name', async () => {
+      it('checking currency token name', async () => {
         expect(await ctoken.name()).to.be.eq('Currency Token')
       })
-      it('checking token name', async () => {
+      it('checking NF token name', async () => {
         expect(await nftoken.name()).to.be.eq('NF Token')
       })
 
 
-      it('checking token symbol', async () => {
+      it('checking currency token symbol', async () => {
         expect(await ctoken.symbol()).to.be.eq('CT')
       })
-      it('checking token symbol', async () => {
+      it('checking NF token symbol', async () => {
         expect(await nftoken.symbol()).to.be.eq('NFT')
       })
 
-      it('checking token initial total supply', async () => {
+      it('checking currency token initial total supply', async () => {
         expect(Number(await ctoken.totalSupply())).to.eq(0)
       })
-      it('checking token initial total supply', async () => {
+      it('checking NF token initial total supply', async () => {
         expect(Number(await nftoken.totalSupply())).to.eq(0)
       })
 
-      it('dGame should have Token minter role', async () => {
+      it('dGame should have currency Token minter role', async () => {
         expect(await ctoken.minter()).to.eq(dgame.address)
       })
-      it('dGame should have Token minter role', async () => {
+      it('dGame should have NF Token minter role', async () => {
         expect(await nftoken.minter()).to.eq(dgame.address)
       })
     })
 
     describe('failure', () => {
-      it('passing minter role should be rejected', async () => {
+      it(' currency token passing minter role should be rejected', async () => {
         await ctoken.passMinterRole(user, {from: deployer}).should.be.rejectedWith(EVM_REVERT)
       })
-      it('passing minter role should be rejected', async () => {
+      it('NF token passing minter role should be rejected', async () => {
         await nftoken.passMinterRole(user, {from: deployer}).should.be.rejectedWith(EVM_REVERT)
       })
 
-      it('tokens minting should be rejected', async () => {
+      it('currency token  minting should be rejected', async () => {
         await ctoken.mint(user, '1', {from: deployer}).should.be.rejectedWith(EVM_REVERT) //unauthorized minter
       })
-      it('tokens minting should be rejected', async () => {
-        await nftoken.mint(user, '1', {from: deployer}).should.be.rejectedWith(EVM_REVERT) //unauthorized minter
-      })
+      // it('NF tokens minting should be rejected', async () => {
+      //   await nftoken.mint(user, 'test NFT token', {from: deployer}).should.be.rejectedWith(EVM_REVERT) //unauthorized minter
+      // })
     })
   })
 
