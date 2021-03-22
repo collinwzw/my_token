@@ -35,9 +35,16 @@ contract dGame{
         }
         return tokenURIs;
     }
+    function showMsgSender() payable public  returns ( address){
 
-//    function buyNFToken(address account, string memory _tokenURI) public {
-//        uint256 balance = showCurrencyTokenBalance(account);
-//        msg.sender.transfer()
-//    }
+        address result = msg.sender;
+        return result;
+    }
+
+    function buyNFToken(address account, string memory _tokenURI, uint256 price) payable public {
+        uint256 balance = showCurrencyTokenBalance(account);
+        require (balance >= price, 'Error, not enough currency tokens');
+        mintNFToken(account, _tokenURI);
+        ctoken.transferCTFrom(account, address(this), price);
+    }
 }

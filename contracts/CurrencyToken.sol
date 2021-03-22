@@ -25,7 +25,7 @@ contract CurrencyToken is ERC20{
 
     function transferCTFrom(address sender, address recipient, uint256 amount) public {
 
-        transferFrom( sender,  recipient,  amount);
+        _transfer( sender,  recipient,  amount);
 
     }
 }
