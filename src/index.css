@@ -132,3 +132,7 @@ ul li:nth-child(2) a:before {
     display: -webkit-flex;
     flex-wrap: wrap;
 }
+
+.clearContent {
+    content: '';
+}
