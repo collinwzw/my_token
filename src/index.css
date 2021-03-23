@@ -136,3 +136,93 @@ ul li:nth-child(2) a:before {
 .clearContent {
     content: '';
 }
+
+#forgeButton {
+    background-color: #004a7f;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 20px;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    -webkit-animation: glowing-button 1500ms infinite;
+    -moz-animation: glowing-button 1500ms infinite;
+    -o-animation: glowing-button 1500ms infinite;
+    animation: glowing-button 1500ms infinite;
+}
+@-webkit-keyframes glowing-button {
+    0% {
+        background-color: #00b277;
+        -webkit-box-shadow: 0 0 3px #00b277;
+    }
+    50% {
+        background-color: #ff0000;
+        -webkit-box-shadow: 0 0 40px #ff0000;
+    }
+    100% {
+        background-color: #00b277;
+        -webkit-box-shadow: 0 0 3px #00b277;
+    }
+}
+
+@-moz-keyframes glowing-button {
+    0% {
+        background-color: #00b277;
+        -moz-box-shadow: 0 0 3px #00b277;
+    }
+    50% {
+        background-color: #5decbc;
+        -moz-box-shadow: 0 0 40px #5decbc;
+    }
+    100% {
+        background-color: #00b277;
+        -moz-box-shadow: 0 0 3px #00b277;
+    }
+}
+
+@-o-keyframes glowing-button {
+    0% {
+        background-color: #00b277;
+        box-shadow: 0 0 3px #00b277;
+    }
+    50% {
+        background-color: #5decbc;
+        box-shadow: 0 0 40px #5decbc;
+    }
+    100% {
+        background-color: #00b277;
+        box-shadow: 0 0 3px #00b277;
+    }
+}
+
+@keyframes glowing-button {
+    0% {
+        background-color: #00b277;
+        box-shadow: 0 0 3px #00b277;
+    }
+    50% {
+        background-color: #5decbc;
+        box-shadow: 0 0 40px #5decbc;
+    }
+    100% {
+        background-color: #00b277;
+        box-shadow: 0 0 3px #00b277;
+    }
+}
+#forgeJumbotron {
+    background-image: url('https://data.whicdn.com/images/250454956/original.jpg');
+    background-size: repeat;
+    font-family: 'Great Vibes', cursive;
+}
+
+#forgeJumbotron h1,
+#forgeJumbotron p {
+    text-shadow: 3px 3px 3px coral;
+    opacity: 80%;
+    padding: 10px;
+    background-color: cornsilk;
+}

@@ -1,5 +1,4 @@
-import React, { Component, useState, useEffect } from 'react'
-import ReactDOM from 'react-dom'
+import React, { useState, useEffect } from 'react'
 import Web3 from 'web3'
 import { Col, Row, Image, Container } from 'react-bootstrap'
 import ReactCardFlip from 'react-card-flip'
@@ -140,12 +139,17 @@ function TilingGame() {
             async function func() {
                 let arr = new Array(20)
                 for (let i = 0; i < 20; i++) {
+                    console.log('matching')
+                    console.log(accounts[0])
                     arr[i] =
-                        (await tiling.methods.matchedArr(i).call()) == true
+                        (await tiling.methods
+                            .matchedArr(accounts[0], i)
+                            .call()) == true
                             ? false
                             : true
                 }
                 setDisplayArr(arr)
+                console.log('flipping')
                 tiling.methods
                     .flippedOne()
                     .call()
