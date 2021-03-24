@@ -3,7 +3,8 @@ html {
 }
 body {
     margin: 0 !important;
-    background-color: black !important;
+    background-image: url('https://image-cdn.hypb.st/https%3A%2F%2Fhypebeast.com%2Fimage%2F2020%2F04%2Fpokemon-pikachu-video-chat-backgrounds-download-info-002.jpg?q=90&w=1400&cbr=1&fit=max');
+    background-size: repeat;
     height: 100%;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
         'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',

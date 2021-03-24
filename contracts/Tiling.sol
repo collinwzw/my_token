@@ -68,7 +68,7 @@ contract Tiling {
           {
             _tile.matchedArr[_tile.resStack[0]] = true;
             _tile.matchedArr[_tile.resStack[1]] = true;
-            dg.mintCToken(msg.sender, 100);
+            dg.mintCToken(msg.sender, 1);
           }
           return _tile.numberArr[index];
     }

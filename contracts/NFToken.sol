@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.0 <0.8.0;
+pragma abicoder v2;
 
 import "../node_modules/openzeppelin-solidity/contracts/token/ERC721/ERC721.sol";
 
@@ -24,6 +25,10 @@ contract NFToken is ERC721{
         _mint(_to, _tokenId);
         _setTokenURI(_tokenId, _tokenURI);
         return true;
+    }
+    function tokenByInd(address account, uint ind)public returns(uint) 
+    {
+        return tokenOfOwnerByIndex(account, ind);
     }
 
 }

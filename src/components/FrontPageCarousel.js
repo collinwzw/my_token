@@ -5,7 +5,7 @@ import Carousel from 'react-bootstrap/Carousel'
 class FrontPageCarousel extends Component {
     render() {
         return (
-            <Carousel className="d-block w-60 mt-2">
+            <Carousel className="d-block w-60 mt-2 h-100">
                 <Carousel.Item>
                     <img
                         className="d-block w-100"
@@ -21,8 +21,9 @@ class FrontPageCarousel extends Component {
                 </Carousel.Item>
                 <Carousel.Item>
                     <img
-                        className="d-block w-100"
-                        src="https://images.wallpapersden.com/image/download/pokemon-pikachu-art_a25tbW6UmZqaraWkpJRmaWVlrWZlamU.jpg"
+                        className="d-block w-100 h-100"
+                        style={{ objectFit: 'cover' }}
+                        src="https://i.pinimg.com/736x/c4/00/22/c40022f65b19e30c4e2867b9cf04fcdd.jpg"
                         alt="Second slide"
                     />
 
