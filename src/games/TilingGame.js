@@ -90,7 +90,21 @@ function TilingGame() {
             await loadWeb3()
             await loadBlockchainData()
         }
-        waitForBlockchain()
+        waitForBlockchain().then(async () => {
+            let arr = new Array(20)
+            for (let i = 0; i < 20; i++) {
+                if (tiling != undefined) {
+                    await tiling.methods
+                        .getMatched(account, i)
+                        .call()
+                        .then((x) => {
+                            // console.log(x + ' ' + i)
+                            arr[i] = x == true ? false : true
+                        })
+                }
+            }
+            setDisplayArr(arr)
+        })
     }, [loading])
 
     async function loadWeb3() {
@@ -131,27 +145,10 @@ function TilingGame() {
         }
         const tilingNetworkData = await Tiling.networks[networkId]
         if (tilingNetworkData) {
-            const tilingAbi = Tiling.abi
-            const tilingAddress = tilingNetworkData.address
-            setTilingAddress(tilingAddress)
-            const tiling = new web3.eth.Contract(tilingAbi, tilingAddress)
-
             async function func() {
-                let arr = new Array(20)
-                for (let i = 0; i < 20; i++) {
-                    console.log('matching')
-                    console.log(accounts[0])
-                    arr[i] =
-                        (await tiling.methods
-                            .matchedArr(accounts[0], i)
-                            .call()) == true
-                            ? false
-                            : true
-                }
-                setDisplayArr(arr)
                 console.log('flipping')
                 tiling.methods
-                    .flippedOne()
+                    .flippedOne(accounts[0])
                     .call()
                     .then((x) => {
                         if (x[0] != -1) {
@@ -162,10 +159,20 @@ function TilingGame() {
                         }
                     })
             }
-            func().then(() => {
-                setTiling(tiling)
-                setLoading(false)
-            })
+            const tilingAbi = Tiling.abi
+            const tilingAddress = tilingNetworkData.address
+            setTilingAddress(tilingAddress)
+            const tiling = new web3.eth.Contract(tilingAbi, tilingAddress)
+            await tiling.methods
+                .initializeIfNeeded(accounts[0])
+                .send({ from: accounts[0] })
+                .then(
+                    async () =>
+                        await func().then(() => {
+                            setTiling(tiling)
+                            setLoading(false)
+                        })
+                )
         } else {
             alert('Smart contract not deployed to detected network.')
         }
@@ -173,10 +180,10 @@ function TilingGame() {
 
     function handleClick(id) {
         tiling.methods
-            .revealAtIndex(id)
+            .revealAtIndex(account, id)
             .send({ from: account })
             .then(async () => {
-                return await tiling.methods.revealAtIndex(id).call()
+                return await tiling.methods.revealAtIndex(account, id).call()
             })
             .then(async (num) => {
                 let arr = [...flippedArr]

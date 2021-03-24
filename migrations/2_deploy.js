@@ -13,7 +13,7 @@ module.exports = async function (deployer) {
     //deploy Token
     await deployer.deploy(dGame, currencyToken.address, nfToken.address)
     const dgame = await dGame.deployed()
-
+    console.error(dgame.address)
     await deployer.deploy(Tiling, dgame.address)
 
     await currencyToken.passMinterRole(dgame.address)
