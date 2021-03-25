@@ -203,6 +203,8 @@ function TilingGame() {
                             if (arr2[indices[0]] == arr2[indices[1]]) {
                                 displayArr[indices[0]] = false
                                 displayArr[indices[1]] = false
+                                arr[indices[0]] = false
+                                arr[indices[1]] = false
                                 setCTBalance(parseInt(CTbalance) + 1)
                             } else {
                                 arr[indices[0]] = false
