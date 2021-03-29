@@ -10,12 +10,12 @@ function Collections() {
     const [nfToken, setNFToken] = useState()
     const [nfTokenAddress, setNFTokenAddress] = useState()
     const [cards, setCards] = useState([])
-    useEffect(() => {
+    useEffect(async () => {
         async function waitForBlockchain() {
             await loadWeb3()
             await loadBlockchainData()
         }
-        waitForBlockchain()
+        await waitForBlockchain()
     }, [loading])
     async function loadWeb3() {
         if (window.ethereum) {
@@ -44,25 +44,29 @@ function Collections() {
                 NFTokenNetworkAbi,
                 NFTokenAddress
             )
+
             setNFTokenAddress(nfToken)
             await nfToken.methods
                 .balanceOf(accounts[0])
                 .call()
                 .then(async (x) => {
+                    let arr = []
                     for (let i = 0; i < x; ++i) {
                         await nfToken.methods
                             .tokenOfOwnerByIndex(accounts[0], i)
                             .call()
                             .then((id) => {
-                                nfToken.methods
-                                    .tokenURI(id)
-                                    .call()
-                                    .then((x) => {
-                                        cards.push(x)
-                                    })
+                                return nfToken.methods.tokenURI(id).call()
                             })
-                        setCards([...cards])
+                            .then((x) => {
+                                arr.push(x)
+                            })
                     }
+                    return arr
+                })
+                .then((arr) => {
+                    setCards([...arr])
+                    setLoading(false)
                 })
         } else {
             alert('Smart contract not deployed to detected network.')
@@ -71,16 +75,17 @@ function Collections() {
     return (
         <Container>
             <Row className="equal">
-                {cards.map((x) => {
-                    return (
-                        <Col md={{ span: 3 }}>
-                            <img
-                                src={x}
-                                style={{ width: '100%', height: '100%' }}
-                            ></img>
-                        </Col>
-                    )
-                })}
+                {!loading &&
+                    cards.map((x) => {
+                        return (
+                            <Col md={{ span: 3 }}>
+                                <img
+                                    src={x}
+                                    style={{ width: '100%', height: '100%' }}
+                                ></img>
+                            </Col>
+                        )
+                    })}
             </Row>
         </Container>
     )

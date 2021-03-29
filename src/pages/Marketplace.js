@@ -7,7 +7,6 @@ import DGame from '../contracts/dGame.json'
 import React, { useState, useEffect } from 'react'
 import Web3 from 'web3'
 
-
 /*should store possible cards in back end otherwise users can just use js to get watever card they want */
 const CARD_ARRAY = [
     {

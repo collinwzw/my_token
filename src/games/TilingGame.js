@@ -190,6 +190,7 @@ function TilingGame() {
                 arr[id] = !flippedArr[id]
                 let arr2 = [...imgArr]
                 arr2[id] = CARD_IMG_ARRAY[num].img
+                let arr3 = [...displayArr]
                 await Promise.resolve()
                     .then(() => {
                         setFlippedArr(arr)
@@ -201,13 +202,12 @@ function TilingGame() {
                             .filter(String)
                         if (indices.length === 2) {
                             if (arr2[indices[0]] == arr2[indices[1]]) {
-                                displayArr[indices[0]] = false
-                                displayArr[indices[1]] = false
+                                arr3[indices[0]] = false
+                                arr3[indices[1]] = false
                                 setCTBalance(parseInt(CTbalance) + 1)
-                            } else {
-                                arr[indices[0]] = false
-                                arr[indices[1]] = false
                             }
+                            arr[indices[0]] = false
+                            arr[indices[1]] = false
 
                             arr2[indices[0]] = ''
                             arr2[indices[1]] = ''
@@ -215,11 +215,10 @@ function TilingGame() {
                         }
                     })
                     .then(async () => {
-                        setImgArr([...arr2])
                         setFlippedArr([...arr])
-                        await delay(1500)
-                        let arr3 = [...displayArr]
-                        setDisplayArr(arr3)
+                        setImgArr([...arr2])
+                        await delay(1000)
+                        setDisplayArr([...arr3])
                     })
             })
     }
@@ -270,7 +269,13 @@ function TilingGame() {
     return (
         <div className="h-80 d-flex flex-column justify-content-center  align-items-center">
             {!loading && (
-                <div style={{ color: '#fff' }}>
+                <div
+                    style={{
+                        color: '#fff',
+                        fontSize: '1rem',
+                        backgroundColor: 'black',
+                    }}
+                >
                     Current Balance: {CTbalance}{' '}
                 </div>
             )}
@@ -284,7 +289,7 @@ function TilingGame() {
                 <Button
                     onClick={async () => {
                         tiling.methods
-                            .reset()
+                            .reset(account)
                             .send({ from: account })
                             .then(() => {
                                 let arr = new Array(20).fill(true)

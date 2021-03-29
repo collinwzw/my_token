@@ -23,6 +23,12 @@ class MarketplaceItem extends React.Component {
                     className="image"
                     style={{ width: '100%', height: '100%' }}
                 ></img>
+                <div
+                    className="middle"
+                    style={{ backgroundColor: 'white', borderRadius: '25%' }}
+                >
+                    {this.props.price} tokens
+                </div>
                 <ul className="bottom">
                     <li>
                         <a href="#" onClick={this.props.clickFunc}>
