@@ -8,6 +8,9 @@ contract CurrencyToken is ERC20{
     event MinterChanged(address indexed from, address to);
 
     constructor() public payable ERC20("Currency Token", "CT") {
+
+    _setupDecimals(0);
+
         minter = msg.sender; //only initially
     }
 
