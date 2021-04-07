@@ -4,7 +4,9 @@ import { Col, Row, Image, Container } from 'react-bootstrap'
 import ReactCardFlip from 'react-card-flip'
 import DGame from '../contracts/dGame.json'
 import Tiling from '../contracts/Tiling.json'
+import BatchRequest from '../contracts/BatchRequest.json'
 import { Button } from 'react-bootstrap'
+let bulkInd = []
 const CARD_IMG_ARRAY = [
     {
         name: 'munchlax',
@@ -124,7 +126,6 @@ function TilingGame() {
         const web3 = window.web3
         const accounts = await web3.eth.getAccounts()
         setAccount(accounts[0])
-
         // Load smart contract
         const networkId = await web3.eth.net.getId()
         const dGameNetworkData = DGame.networks[networkId]
@@ -179,11 +180,28 @@ function TilingGame() {
     }
 
     function handleClick(id) {
+        bulkInd.push(id)
         tiling.methods
             .revealAtIndex(account, id)
-            .send({ from: account })
-            .then(async () => {
-                return await tiling.methods.revealAtIndex(account, id).call()
+            .call()
+            .then(async (x) => {
+                console.log(bulkInd)
+                if (bulkInd.length >= 6) {
+                    await tiling.methods
+                        .bulkReveal(account, bulkInd)
+                        .send({ from: account })
+                        .then(async () => {
+                            bulkInd = []
+                            await dGame.methods
+                                .showCurrencyTokenBalance(account)
+                                .call()
+                                .then((x) => {
+                                    setCTBalance(parseInt(x))
+                                })
+                        })
+                }
+
+                return x
             })
             .then(async (num) => {
                 let arr = [...flippedArr]
@@ -204,20 +222,35 @@ function TilingGame() {
                             if (arr2[indices[0]] == arr2[indices[1]]) {
                                 arr3[indices[0]] = false
                                 arr3[indices[1]] = false
-                                setCTBalance(parseInt(CTbalance) + 1)
+                                if (bulkInd.length > 0) {
+                                    await tiling.methods
+                                        .bulkReveal(account, bulkInd)
+                                        .send({ from: account })
+                                        .then(async () => {
+                                            bulkInd = []
+                                            await dGame.methods
+                                                .showCurrencyTokenBalance(
+                                                    account
+                                                )
+                                                .call()
+                                                .then((x) => {
+                                                    setCTBalance(parseInt(x))
+                                                })
+                                        })
+                                }
                             }
                             arr[indices[0]] = false
                             arr[indices[1]] = false
 
                             arr2[indices[0]] = ''
                             arr2[indices[1]] = ''
-                            await delay(1500)
+                            await delay(1000)
                         }
                     })
                     .then(async () => {
                         setFlippedArr([...arr])
                         setImgArr([...arr2])
-                        await delay(1000)
+                        await delay(500)
                         setDisplayArr([...arr3])
                     })
             })
@@ -285,7 +318,11 @@ function TilingGame() {
             >
                 {!loading && render_tiles()}
             </Container>
-            {!loading && (
+            <div
+                className="h-80 d-flex flex-column justify-content-center  align-items-center"
+                fluid
+                className="justify-content-center align-items-center"
+            >
                 <Button
                     onClick={async () => {
                         tiling.methods
@@ -299,7 +336,27 @@ function TilingGame() {
                 >
                     Play Again
                 </Button>
-            )}
+
+                <Button
+                    onClick={async () => {
+                        console.log(bulkInd)
+                        tiling.methods
+                            .bulkReveal(account, bulkInd)
+                            .send({ from: account })
+                            .then(async () => {
+                                bulkInd = []
+                                await dGame.methods
+                                    .showCurrencyTokenBalance(account)
+                                    .call()
+                                    .then((x) => {
+                                        setCTBalance(parseInt(x))
+                                    })
+                            })
+                    }}
+                >
+                    Force Save
+                </Button>
+            </div>
         </div>
     )
 }

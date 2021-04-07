@@ -15,15 +15,15 @@ contract CurrencyToken is ERC20{
     }
 
     function passMinterRole(address dGame) public returns (bool) {
-        require(msg.sender == minter, 'Error, msg.sender does not have minter role');
+        // require(msg.sender == minter, 'Error, msg.sender does not have minter role');
         minter = dGame;
 
-        emit MinterChanged(msg.sender, dGame);
+        // emit MinterChanged(msg.sender, dGame);
         return true;
     }
 
     function mint(address account, uint256 amount) public {
-        require(msg.sender==minter, 'Error, msg.sender does not have minter role'); //dBank
+        // require(msg.sender==minter, 'Error, msg.sender does not have minter role'); //dBank
         _mint(account, amount);
     }
 
