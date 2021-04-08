@@ -1,7 +1,4 @@
 import React, { Component } from 'react'
-import Link from 'react-router-dom/Link'
-import Button from 'react-bootstrap/Button'
-import Card from 'react-bootstrap/Card'
 
 class MarketplaceItem extends React.Component {
     constructor(props) {
@@ -26,9 +23,15 @@ class MarketplaceItem extends React.Component {
                     className="image"
                     style={{ width: '100%', height: '100%' }}
                 ></img>
+                <div
+                    className="middle"
+                    style={{ backgroundColor: 'white', borderRadius: '25%' }}
+                >
+                    {this.props.price} tokens
+                </div>
                 <ul className="bottom">
                     <li>
-                        <a href="#">
+                        <a href="#" onClick={this.props.clickFunc}>
                             <img
                                 className="icon w-100 h-100 p-1"
                                 style={{ objectFit: 'cover' }}

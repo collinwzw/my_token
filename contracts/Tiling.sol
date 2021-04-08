@@ -1,41 +1,131 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.0 <0.8.0;
-
+import "./dGame.sol";
 
 contract Tiling {
-    uint256[] private numberArr;
-    uint8[] private resStack;
-    uint8 private stackCount;
-    constructor() public {
-      numberArr = [0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9];
-      shuffle();
-      stackCount = 0;
-      resStack = [10,10];
+    dGame public dg;
+    struct tile{
+      bool initialized;
+      uint256[20] numberArr;
+      uint256[2] resStack;
+      bool[20] matchedArr;
+      uint256 stackCount;
+      uint256 combo;
+    }
+    mapping(address => tile) public tiles;
+    mapping(address => bool) public initialized;
+    constructor(dGame addr) public {
+      dg = addr;
     }
 
-    function shuffle() public {
-      for (uint256 i = 0; i < numberArr.length; i++) {
-          uint256 n = i + uint256(keccak256(abi.encodePacked(block.timestamp))) % (numberArr.length - i);
-          uint256 temp = numberArr[n];
-          numberArr[n] = numberArr[i];
-          numberArr[i] = temp;
+    function isInitialized(address playerId) public view returns (bool) {
+        return initialized[playerId];
+    }
+
+    function setInitialized(address playerId) public  returns (bool) {
+        initialized[playerId] = true;
+    }
+
+    function bulkReveal(address add, uint256[] calldata indices) public {
+        for (uint256 i = 0; i < indices.length; i++) {
+            revealAtIndex(add, indices[i]);
+        }
+    }
+    function initializeIfNeeded(address playerId) public {
+            tile storage _tile = tiles[playerId];
+            if(_tile.initialized == false)
+            {
+               _tile.initialized = true;
+              for (uint i = 0; i < 10; i += 1){
+                _tile.numberArr[2*i] = i;
+                _tile.numberArr[2*i + 1] = i;
+              }
+              _tile.resStack[0] = 10;
+              _tile.resStack[1] = 10;
+              _tile.stackCount = 0;
+              _tile.combo = 0;
+              for(uint i = 0; i < 20; i++)
+              {
+                _tile.matchedArr[i] = false;
+              }
+              shuffle(playerId);
+              initialized[playerId] = true;
+            }
+    }
+
+    function shuffle(address playerId) private {
+      tile storage _tile = tiles[playerId];
+      for (uint256 i = 0; i < _tile.numberArr.length; i++) {
+          uint256 n = i + uint256(keccak256(abi.encodePacked(block.timestamp))) % (_tile.numberArr.length - i);
+          uint256 temp = _tile.numberArr[n];
+          _tile.numberArr[n] = _tile.numberArr[i];
+          _tile.numberArr[i] = temp;
       }
     }
 
-    function revealAtIndex(uint8 index) public returns(uint){
-            resStack[stackCount] = index;
-            stackCount++;
-            return numberArr[index];
+    function revealAtIndex(address playerId, uint256 index) public returns(uint256){
+      tile storage _tile = tiles[playerId];
+        if(_tile.stackCount == 2)
+        {
+          _tile.stackCount = 0;
+        }
+          _tile.resStack[tiles[playerId].stackCount] = index;
+          _tile.stackCount++;
+          if(isMatch(playerId))
+          {
+            _tile.matchedArr[_tile.resStack[0]] = true;
+            _tile.matchedArr[_tile.resStack[1]] = true;
+            _tile.combo = _tile.combo + 1;
+            dg.mintCToken(msg.sender, _tile.combo);
+          }else if(_tile.stackCount == 2)
+          {
+            _tile.combo = 0;
+          }
+          return _tile.numberArr[index];
     }
 
-    function isMatch()public returns(string memory){
-      if(stackCount == 2)
+    function getCTBalance(address playerId) public returns (uint256){
+      return dg.showCurrencyTokenBalance(playerId);
+    }
+
+    function flippedOne(address playerId)public returns(int, int){
+      tile storage _tile = tiles[playerId];
+      if(_tile.initialized == false )
       {
-        stackCount = 0;
-        return numberArr[resStack[0]] == numberArr[resStack[1]]?"true":"false";
+        return (-1 , -1);
       }
-      stackCount++;
-      return "undefined";
+      if(_tile.stackCount == 1)
+      {
+        return (int(_tile.resStack[0]), int(_tile.numberArr[_tile.resStack[0]]));
+      }
+      return (-1 , -1);
     }
 
+    function isMatch(address playerId)private returns(bool){
+      tile storage _tile = tiles[playerId];
+      if(_tile.stackCount == 2)
+      {
+        return _tile.numberArr[_tile.resStack[0]] == _tile.numberArr[_tile.resStack[1]];
+      }
+      return false;
+    }
+
+    function reset(address playerId) public {
+      tile storage _tile = tiles[playerId];
+      for(uint i = 0; i < 20; i++)
+      {
+        _tile.matchedArr[i] = false;
+      }
+      shuffle(playerId);
+    }
+
+     function getMatched(address playerId, uint256 index)public returns (bool){
+      tile storage _tile = tiles[playerId];
+      // address playerId = msg.sender;
+      if(_tile.initialized == false )
+      {
+        return false;
+      }
+      return _tile.matchedArr[index];
+    }
 }
