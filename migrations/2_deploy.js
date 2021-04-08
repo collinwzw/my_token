@@ -2,7 +2,6 @@ const CurrencyToken = artifacts.require('CurrencyToken')
 const dGame = artifacts.require('dGame')
 const NFToken = artifacts.require('NFToken')
 const Tiling = artifacts.require('Tiling')
-const BatchRequest = artifacts.require('BatchRequest')
 module.exports = async function (deployer) {
     //deploy Token
     await deployer.deploy(CurrencyToken)

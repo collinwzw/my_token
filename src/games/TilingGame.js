@@ -4,7 +4,6 @@ import { Col, Row, Image, Container } from 'react-bootstrap'
 import ReactCardFlip from 'react-card-flip'
 import DGame from '../contracts/dGame.json'
 import Tiling from '../contracts/Tiling.json'
-import BatchRequest from '../contracts/BatchRequest.json'
 import { Button } from 'react-bootstrap'
 let bulkInd = []
 const CARD_IMG_ARRAY = [
