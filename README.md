@@ -1,12 +1,10 @@
 
 ## Get Started
 ###
-`
-npm install react-bootstrap
-npm install react-bootstrap
-npm install react-card-flip
-npm install react-router-dom
-`
+`npm install react-bootstrap`
+`npm install react-bootstrap`
+`npm install react-card-flip`
+`npm install react-router-dom`
 ### `truffle migrate --reset`
 
 ### Delete your package-lock.json
